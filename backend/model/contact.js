@@ -1,16 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+console.log(mongoose.connection.readyState);
 
-productSchema = new Schema( {
+contactSchema = new Schema( {
 	name: String,
-	desc: String,
-	price: Number,
-	image: String,
-	discount: Number,
+	number: String,
+	company: String,
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },
 	date : { type : Date, default: Date.now }
 }),
-product = mongoose.model('product', productSchema);
+contact = mongoose.model('contact', contactSchema);
 
-module.exports = product;
+module.exports = contact;
