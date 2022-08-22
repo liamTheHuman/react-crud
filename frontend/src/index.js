@@ -14,7 +14,6 @@ ReactDOM.render(
             <Route exact path='/' component={Login} />
             <Route exact path='/register' component={Register} />
             <Route path='/dashboard' component={Dashboard} />
-            {/* <Route component={NotFound}/> */}
         </Switch>
     </BrowserRouter>,
     document.getElementById('root')

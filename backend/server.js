@@ -3,18 +3,16 @@ var app = express();
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-var multer = require('multer'),
-  bodyParser = require('body-parser'),
+var bodyParser = require('body-parser'),
   path = require('path');
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/contactDB");
-var fs = require('fs');
 var contact = require("./model/contact.js");
 var user = require("./model/user.js");
 
 app.use(cors());
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({    
   extended: false
 }));
 
@@ -24,7 +22,7 @@ app.use("/", (req, res, next) => {
       next();
     } else {
       /* decode jwt token if authorized*/
-      jwt.verify(req.headers.token, 'shhhhh11111', function (err, decoded) {
+      jwt.verify(req.headers.token, 'liams-secret-key', function (err, decoded) {
         // if (decoded && decoded.user) {
           req.user = decoded;
           next();
@@ -51,7 +49,7 @@ app.get("/", (req, res) => {
   });
 });
 
-/* login api */
+/* Login api */
 app.post("/login", (req, res) => {
   try {
     if (req.body && req.body.username && req.body.password) {
@@ -90,7 +88,7 @@ app.post("/login", (req, res) => {
 
 });
 
-/* register api */
+/* Register api */
 app.post("/register", (req, res) => {
   try {
     if (req.body && req.body.username && req.body.password) {
@@ -128,7 +126,7 @@ app.post("/register", (req, res) => {
 
     } else {
       res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
+        errorMessage: 'Missing parameters',
         status: false
       });
     }
@@ -141,7 +139,7 @@ app.post("/register", (req, res) => {
 });
 
 function checkUserAndGenerateToken(data, req, res) {
-  jwt.sign({ user: data.username, id: data._id }, 'shhhhh11111', { expiresIn: '1d' }, (err, token) => {
+  jwt.sign({ user: data.username, id: data._id }, 'liams-secret-key', { expiresIn: '1d' }, (err, token) => {
     if (err) {
       res.status(400).json({
         status: false,
@@ -176,20 +174,20 @@ app.post("/add-contact", (req, res) => {
         } else {
           res.status(200).json({
             status: true,
-            title: 'Contact Added successfully.'
+            title: 'Contact added successfully'
           });
         }
       });
 
     } else {
       res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
+        errorMessage: 'Missing parameters',
         status: false
       });
     }
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: 'Something went wrong',
       status: false
     });
   }
@@ -222,7 +220,7 @@ app.post("/update-contact", (req, res) => {
           } else {
             res.status(200).json({
               status: true,
-              title: 'Contact updated.'
+              title: 'Contact updated'
             });
           }
         });
@@ -231,13 +229,13 @@ app.post("/update-contact", (req, res) => {
 
     } else {
       res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
+        errorMessage: 'Missing parameters',
         status: false
       });
     }
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: 'Something went wrong',
       status: false
     });
   }
@@ -251,7 +249,7 @@ app.post("/delete-contact", (req, res) => {
         if (data.is_delete) {
           res.status(200).json({
             status: true,
-            title: 'Contact deleted.'
+            title: 'Contact deleted'
           });
         } else {
           res.status(400).json({
@@ -262,13 +260,13 @@ app.post("/delete-contact", (req, res) => {
       });
     } else {
       res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
+        errorMessage: 'Missing parameters',
         status: false
       });
     }
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: 'Something went wrong',
       status: false
     });
   }
@@ -299,7 +297,7 @@ app.get("/get-contact", (req, res) => {
             if (data && data.length > 0) {
               res.status(200).json({
                 status: true,
-                title: 'Contact retrived.',
+                title: 'Contact retrieved',
                 contacts: data,
                 current_page: page,
                 total: count,
@@ -307,7 +305,7 @@ app.get("/get-contact", (req, res) => {
               });
             } else {
               res.status(400).json({
-                errorMessage: 'There is no contact!',
+                errorMessage: 'No contacts added',
                 status: false
               });
             }
@@ -322,7 +320,7 @@ app.get("/get-contact", (req, res) => {
       });
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: 'Something went wrong',
       status: false
     });
   }

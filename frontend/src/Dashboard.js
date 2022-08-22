@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Button, TextField, Dialog, DialogActions, LinearProgress,
-  DialogTitle, DialogContent, TableBody, Table,
+  DialogTitle, DialogContent, InputAdornment, TableBody, Table,
   TableContainer, TableHead, TableRow, TableCell
 } from '@material-ui/core';
 import PhoneInput from 'react-phone-input-2';
@@ -69,7 +69,6 @@ export default class Dashboard extends Component {
       id: id
     }, {
       headers: {
-        'Content-Type': 'application/json',
         'token': this.state.token
       }
     }).then((res) => {
@@ -115,8 +114,11 @@ export default class Dashboard extends Component {
   addContact = () => {
 
     axios.post('http://localhost:2000/add-contact', {
+      name: this.state.name,
+      number: this.state.number,
+      company: this.state.company
+    },{
       headers: {
-        'content-type': 'multipart/form-data',
         'token': this.state.token
       }
     }).then((res) => {
@@ -145,8 +147,12 @@ export default class Dashboard extends Component {
   updateContact = () => {
 
     axios.post('http://localhost:2000/update-contact', {
+      name: this.state.name,
+      number: this.state.number,
+      company: this.state.company,
+      id: this.state.id
+    },{
       headers: {
-        'content-type': 'multipart/form-data',
         'token': this.state.token
       }
     }).then((res) => {
@@ -244,15 +250,6 @@ export default class Dashboard extends Component {
               placeholder="Contact Name"
               required
             /><br />
-            {/* <PhoneInput
-              id="standard-basic"
-              autoComplete="off"
-              country={'rsa'}
-              value={this.state.number}
-              onChange={number => this.setState({ number })}
-              placeholder="Number"
-              required
-            /><br /> */}
             <TextField
               id="standard-basic"
               type="text"
@@ -260,6 +257,12 @@ export default class Dashboard extends Component {
               name="number"
               value={this.state.number}
               onChange={this.onChange}
+              error={this.state.number.match(/^(\+\d{1,3}[- ]?)?\d{10}$/)}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">
+                   +27
+                   </InputAdornment>,
+              }}
               placeholder="Number"
               required
             /><br />
@@ -280,7 +283,8 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.number == '' || this.state.company == ''}
+              disabled={this.state.name == '' || this.state.number.match(/^(\+\d{1,3}[- ]?)?\d{9}$/) ||
+               this.state.company == ''}
               onClick={(e) => this.updateContact()} color="primary" autoFocus>
               Edit Contact
             </Button>
@@ -306,15 +310,6 @@ export default class Dashboard extends Component {
               placeholder="Contact Name"
               required
             /><br />
-            {/* <PhoneInput
-              id="standard-basic"
-              autoComplete="off"
-              country={'rsa'}
-              value={this.state.number}
-              onChange={number => this.setState({ number })}
-              placeholder="Number"
-              required
-            /><br /> */}
             <TextField
               id="standard-basic"
               type="text"
@@ -322,6 +317,12 @@ export default class Dashboard extends Component {
               name="number"
               value={this.state.number}
               onChange={this.onChange}
+              error={this.state.number.match(/^(\+\d{1,3}[- ]?)?\d{10}$/)}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">
+                   +27
+                   </InputAdornment>,
+              }}
               placeholder="Number"
               required
             /><br />
@@ -342,7 +343,8 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.number == null ||  this.state.company == ''}
+              disabled={this.state.name == '' || !this.state.number.match(/^(\+\d{1,3}[- ]?)?\d{9}$/) ||
+                this.state.company == ''}
               onClick={(e) => this.addContact()} color="primary" autoFocus>
               Add Contact
             </Button>
